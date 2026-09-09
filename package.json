@@ -45,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aslikanpolat/testdata-sweeper.git"
+    "url": "git+https://github.com/aslikanpolat/testdata-sweeper.git"
   },
   "bugs": {
     "url": "https://github.com/aslikanpolat/testdata-sweeper/issues"
