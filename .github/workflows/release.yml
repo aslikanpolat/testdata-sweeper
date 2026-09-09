@@ -1,0 +1,105 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: Default release increment when commits have no semver marker
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
+      incrementPerCommit:
+        description: Increment once per commit instead of once per release
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: create-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Calculate version, publish package, and create GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Install npm staged publishing CLI
+        run: npm install --global npm@11.18.0
+
+      - name: Calculate next version
+        id: versioning
+        uses: MCKanpolat/auto-semver-action@1.0.12
+        with:
+          releaseType: ${{ inputs.releaseType }}
+          incrementPerCommit: ${{ inputs.incrementPerCommit }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update package version
+        env:
+          VERSION: ${{ steps.versioning.outputs.version }}
+        run: npm version "$VERSION" --no-git-tag-version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify package
+        run: |
+          npm run check
+          npm pack --dry-run
+
+      - name: Commit version and push tag
+        env:
+          VERSION: ${{ steps.versioning.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore: release v$VERSION [skip ci]"
+          git tag "v$VERSION"
+          git push origin HEAD:main
+          git push origin "v$VERSION"
+
+      - name: Verify package exists for staged publishing
+        shell: bash
+        run: |
+          PACKAGE_NAME="$(node -p "require('./package.json').name")"
+          if ! npm view "$PACKAGE_NAME" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "::error::Bootstrap the package once with direct npm publish before using staged releases."
+            exit 1
+          fi
+
+      - name: Stage package on npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ steps.versioning.outputs.version }}
+        shell: bash
+        run: |
+          if [[ "$VERSION" == *-* ]]; then
+            npm stage publish --tag next
+          else
+            npm stage publish --tag latest
+          fi
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.versioning.outputs.version }}
+        run: gh release create "v$VERSION" --title "v$VERSION" --generate-notes

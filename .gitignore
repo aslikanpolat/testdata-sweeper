@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+test-artifacts/
+graphify-out/
+.graphify/
+.graphify_*
+*.log

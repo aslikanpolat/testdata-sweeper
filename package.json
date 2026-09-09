@@ -1,0 +1,120 @@
+{
+  "name": "testdata-sweeper",
+  "author": {
+    "name": "Aslı Kanpolat",
+    "url": "https://github.com/aslikanpolat"
+  },
+  "version": "0.1.0",
+  "private": false,
+  "description": "Fail-safe PostgreSQL, MongoDB, MySQL, MariaDB, Microsoft SQL Server, and Redis test-data cleanup for Playwright runs.",
+  "keywords": [
+    "playwright",
+    "test-data",
+    "cleanup",
+    "postgresql",
+    "postgres",
+    "mongodb",
+    "mysql",
+    "mariadb",
+    "mssql",
+    "sql-server",
+    "redis",
+    "qa",
+    "test-automation"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "testdata-sweeper": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./playwright": {
+      "types": "./dist/playwright.d.ts",
+      "import": "./dist/playwright.js"
+    },
+    "./teardown": {
+      "types": "./dist/teardown.d.ts",
+      "import": "./dist/teardown.js"
+    },
+    "./cli": "./dist/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aslikanpolat/testdata-sweeper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aslikanpolat/testdata-sweeper/issues"
+  },
+  "homepage": "https://github.com/aslikanpolat/testdata-sweeper#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . --ext .ts",
+    "check": "npm run typecheck && npm run lint && npm test && node --check dist/cli.js",
+    "prepare": "npm run build",
+    "prepack": "npm run build"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@playwright/test": ">=1.45.0",
+    "mongodb": ">=6.0.0",
+    "mssql": ">=11.0.0",
+    "pg": ">=8.0.0",
+    "mysql2": ">=3.0.0",
+    "redis": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "mongodb": {
+      "optional": true
+    },
+    "mssql": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
+    },
+    "mysql2": {
+      "optional": true
+    },
+    "redis": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/mssql": "^12.3.0",
+    "@types/node": "^24.3.0",
+    "@types/pg": "^8.15.5",
+    "eslint": "^9.35.0",
+    "mongodb": "^6.18.0",
+    "mssql": "^11.0.1",
+    "mysql2": "^3.24.4",
+    "pg": "^8.16.3",
+    "redis": "^5.12.1",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.42.0",
+    "vitest": "^3.2.4"
+  }
+}
