@@ -4,7 +4,7 @@
     "name": "Aslı Kanpolat",
     "url": "https://github.com/aslikanpolat"
   },
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": false,
   "description": "Fail-safe PostgreSQL, MongoDB, MySQL, MariaDB, Microsoft SQL Server, and Redis test-data cleanup for Playwright runs.",
   "keywords": [

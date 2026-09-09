@@ -279,24 +279,7 @@ npm run check
 npm pack --dry-run
 ```
 
-The published package contains compiled output, TypeScript source, README, license, and contribution/security documentation.
-
-## Publishing to npm
-
-The package is configured for public npm publishing and uses the GitHub repository:
-
-```text
-https://github.com/aslikanpolat/testdata-sweeper
-```
-
-Before the first release, authenticate with npm and run:
-
-```bash
-npm login
-npm publish --access public
-```
-
-After the first bootstrap publish, the GitHub Actions release workflow can be used for subsequent versioned releases. Configure the repository’s `NPM_TOKEN` secret before running it.
+The package build includes compiled output, TypeScript source, README, license, and contribution/security documentation.
 
 ## License
 
